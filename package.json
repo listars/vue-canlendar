@@ -1,0 +1,72 @@
+{
+  "name": "vue-canlendar",
+  "version": "1.0.0",
+  "description": "",
+  "author": "https://github.com/FEMessage",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FEMessage/vue-canlendar.git"
+  },
+  "keywords": ["vue", "sfc", "component"],
+
+  "main": "dist/vue-canlendar.umd.js",
+  "module": "dist/vue-canlendar.esm.js",
+  "unpkg": "dist/vue-canlendar.min.js",
+  "browser": {
+    "./sfc": "src/vue-canlendar.vue"
+  },
+
+  "scripts": {
+    "styleguide": "vue-styleguidist server",
+    "doc": "vue-styleguidist build",
+    "test": "jest",
+    "build": "npm run build:unpkg & npm run build:es & npm run build:umd",
+    "build:umd":
+      "rollup --config build/rollup.config.js --format umd --file dist/vue-canlendar.umd.js",
+    "build:es":
+      "rollup --config build/rollup.config.js --format es --file dist/vue-canlendar.esm.js",
+    "build:unpkg":
+      "rollup --config build/rollup.config.js --format iife --file dist/vue-canlendar.min.js",
+    "prepublishOnly": "npm run build",
+    "precommit": "pretty-quick --staged"
+  },
+
+  "dependencies": {
+  },
+
+  "devDependencies": {
+    "minimist": "^1.2.0",
+    "rollup": "^0.57.1",
+    "rollup-plugin-buble": "^0.19.2",
+    "rollup-plugin-uglify-es": "0.0.1",
+    "rollup-plugin-vue": "^3.0.0",
+    "vue": "^2.5.16",
+    "vue-template-compiler": "^2.5.16",
+    "husky": "^0.14.3",
+    "prettier": "1.12.1",
+    "pretty-quick": "^1.4.1",
+    "@vue/test-utils": "^1.0.0-beta.16",
+    "babel-jest": "^23.0.1",
+    "babel-preset-env": "^1.7.0",
+    "jest": "^23.1.0",
+    "vue-jest": "^2.6.0",
+    "vue-styleguidist": "1.7.7",
+    "webpack": "^3.10.0",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.2"
+  },
+
+  "jest": {
+    "moduleFileExtensions": ["js", "vue"],
+    "transform": {
+      "^.+\\.js$": "./node_modules/babel-jest",
+      "^.+\\.vue$": "./node_modules/vue-jest"
+    }
+  },
+
+  "engines": {
+    "node": ">= 4.0.0",
+    "npm": ">= 3.0.0"
+  }
+}
