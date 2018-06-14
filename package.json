@@ -9,14 +9,12 @@
     "url": "https://github.com/FEMessage/vue-canlendar.git"
   },
   "keywords": ["vue", "sfc", "component"],
-
   "main": "dist/vue-canlendar.umd.js",
   "module": "dist/vue-canlendar.esm.js",
   "unpkg": "dist/vue-canlendar.min.js",
   "browser": {
     "./sfc": "src/vue-canlendar.vue"
   },
-
   "scripts": {
     "styleguide": "vue-styleguidist server",
     "doc": "vue-styleguidist build",
@@ -31,10 +29,9 @@
     "prepublishOnly": "npm run build",
     "precommit": "pretty-quick --staged"
   },
-
   "dependencies": {
+    "fecha": "^2.3.3"
   },
-
   "devDependencies": {
     "minimist": "^1.2.0",
     "rollup": "^0.57.1",
@@ -56,7 +53,6 @@
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2"
   },
-
   "jest": {
     "moduleFileExtensions": ["js", "vue"],
     "transform": {
@@ -64,7 +60,6 @@
       "^.+\\.vue$": "./node_modules/vue-jest"
     }
   },
-
   "engines": {
     "node": ">= 4.0.0",
     "npm": ">= 3.0.0"
