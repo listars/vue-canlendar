@@ -1,7 +1,10 @@
 <template>
   <div class="vue-canlendar">
-    <div class="canlendar-week">
+    <div class="canlendar-week spaceBetween">
       <p class="title" v-for="(item, index) in weekTitle" :key="index">{{item}}</p>
+    </div>
+    <div class="canlendar-day spaceBetween" v-for="(item, index) in canlendarData" :key="index">
+      <div class="day-con" v-for="(dItem, dIndex) in item" :key="dIndex">{{dItem.time}}</div>
     </div>
   </div>
 </template>
@@ -21,11 +24,12 @@ export default {
         'Friday',
         'Saturday',
         'Moneday'
-      ]
+      ],
+      canlendarData: []
     }
   },
   mounted() {
-    this.getCanlendarList(new Date())
+    this.getCanlendarList(new Date('2018-07-10'))
   },
   methods: {
     // 获取整个月份的数据
@@ -40,7 +44,11 @@ export default {
           this.expendTime(date, 'MM', 'before'),
           0
         ).getDate(),
-        // afterDays = new Date(this.expendTime(date, 'YEAR', 'after'), this.expendTime(date, 'MM', 'after'), 0).getDate(),
+        afterDays = new Date(
+          this.expendTime(date, 'YEAR', 'after'),
+          this.expendTime(date, 'MM', 'after'),
+          0
+        ).getDate(),
         editDay = []
       for (let i = 1; i <= monthDays; i++) {
         let now = fecha.format(date.setDate(1), 'd') - 1 + i
@@ -52,7 +60,6 @@ export default {
               `-${String(i).length === 1 ? '0' + i : i}`
           )
         )
-        // console.log(Math.floor(i/7))
       }
       if (+fecha.format(date.setDate(1), 'd') !== 0) {
         let downDay = beforeDays
@@ -71,9 +78,28 @@ export default {
           )
         }
       }
+      if (+fecha.format(date.setDate(monthDays), 'd') !== 6) {
+        let downDay = afterDays
+        for (
+          let i = 1;
+          i <= 6 - fecha.format(date.setDate(monthDays), 'd');
+          i++
+        ) {
+          editDay[editDay.length - 1].push(
+            this.createDay(
+              this.expendTime(date, 'YEAR', 'after') +
+                '-' +
+                this.expendTime(date, 'MM', 'after') +
+                `-${String(i).length === 1 ? '0' + i : i}`
+            )
+          )
+        }
+      }
       /**
        *  1.全部天数在一个数组  2.一周一周切分组成一个月  ====>   选择2的方案，这样联动一些拓展事件自由度高一点
        */
+      this.canlendarData = editDay
+      console.log(editDay)
     },
     // 整理日期数据方法
     createDay(i) {
@@ -104,13 +130,23 @@ export default {
 <style lang="stylus">
 .vue-canlendar {
   width 100%
-  .canlendar-week {
+  .spaceBetween {
     width 100%
     display flex
     justify-content space-between
+  }
+  .canlendar-week {
     .title {
       width 14.28%
       text-align center
+    }
+  }
+  .canlendar-day {
+    .day-con {
+      width 14.28%
+      height 130px
+      border 1px solid #f0f0f0
+      border-width 0 1px 1px 0
     }
   }
 }
