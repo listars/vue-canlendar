@@ -1,10 +1,15 @@
 <template>
   <div class="vue-canlendar">
+    <div class="canlendar-head">
+      <span class="canlendar-arrow" @click="prevClick">&lt;</span>
+      {{changeTime(Date.now(), 'YYYY年M月')}}
+      <span class="canlendar-arrow" @click="nextClick">&gt;</span>
+    </div>
     <div class="canlendar-week spaceBetween">
       <p class="title" v-for="(item, index) in weekTitle" :key="index">{{item}}</p>
     </div>
     <div class="canlendar-day spaceBetween" v-for="(item, index) in canlendarData" :key="index">
-      <div class="day-con" v-for="(dItem, dIndex) in item" :key="dIndex">{{dItem.time}}</div>
+      <div class="day-con" v-for="(dItem, dIndex) in item" :key="dIndex">{{changeTime(dItem.time, 'M/D')}}</div>
     </div>
   </div>
 </template>
@@ -29,9 +34,21 @@ export default {
     }
   },
   mounted() {
-    this.getCanlendarList(new Date('2018-07-10'))
+    this.getCanlendarList(new Date())
   },
   methods: {
+    prevClick() {
+      let time =
+        fecha.format(new Date(), 'YYYY-') +
+        (+fecha.format(new Date(), 'MM') - 1)
+      this.getCanlendarList(new Date(time))
+    },
+    nextClick() {
+      let time =
+        fecha.format(new Date(), 'YYYY-') +
+        (+fecha.format(new Date(), 'MM') + 1)
+      this.getCanlendarList(new Date(time))
+    },
     // 获取整个月份的数据
     getCanlendarList(date) {
       let monthDays = new Date(
@@ -79,7 +96,7 @@ export default {
         }
       }
       if (+fecha.format(date.setDate(monthDays), 'd') !== 6) {
-        let downDay = afterDays
+        // let downDay = afterDays
         for (
           let i = 1;
           i <= 6 - fecha.format(date.setDate(monthDays), 'd');
@@ -99,7 +116,7 @@ export default {
        *  1.全部天数在一个数组  2.一周一周切分组成一个月  ====>   选择2的方案，这样联动一些拓展事件自由度高一点
        */
       this.canlendarData = editDay
-      console.log(editDay)
+      // console.log(editDay)
     },
     // 整理日期数据方法
     createDay(i) {
@@ -107,6 +124,10 @@ export default {
         time: fecha.format(new Date(i), 'YYYY-MM-DD')
       }
       return returnObj
+    },
+    // 日期转换方法
+    changeTime(date, type) {
+      return fecha.format(new Date(date), type)
     },
     // 时间操作拓展方法
     expendTime(date, type, status) {
@@ -129,25 +150,59 @@ export default {
 
 <style lang="stylus">
 .vue-canlendar {
-  width 100%
+  width 75%
+  margin 0 auto
+  color #666
+  font-size 14px
+  * {
+    box-sizing border-box
+    margin 0
+  }
   .spaceBetween {
     width 100%
     display flex
     justify-content space-between
   }
+  .canlendar-head {
+    border-top-left-radius 3px
+    border-top-right-radius 3px
+    border 1px solid #f0f0f0
+    text-align center
+    padding 15px
+  }
+  .canlendar-arrow {
+    font-size 16px
+    margin 0 25px
+  }
+  .canlendar-arrow:hover{
+    color rgb(81, 160, 250)
+  }
   .canlendar-week {
+    background #f0f0f0
+    padding 15px
     .title {
       width 14.28%
       text-align center
     }
   }
   .canlendar-day {
+    border-left 1px solid #f0f0f0
     .day-con {
       width 14.28%
       height 130px
       border 1px solid #f0f0f0
       border-width 0 1px 1px 0
+      display flex
+      flex-direction column-reverse
+      text-align right
+      padding 8px
+    }
+    .day-con:hover {
+      background rgb(240,247,250)
     }
   }
+}
+.vue-canlendar:hover{
+  box-shadow 0 0 3px #f0f0f0
 }
 </style>
