@@ -1,9 +1,9 @@
 <template>
   <div class="vue-canlendar">
     <div class="canlendar-head">
-      <span class="canlendar-arrow" @click="prevClick">&lt;</span>
-      {{changeTime(Date.now(), 'YYYY年M月')}}
-      <span class="canlendar-arrow" @click="nextClick">&gt;</span>
+      <button class="canlendar-arrow none-back" @click="prevClick">&lt;</button>
+      {{changeTime(selectMonth, 'YYYY年M月')}}
+      <button class="canlendar-arrow none-back" @click="nextClick">&gt;</button>
     </div>
     <div class="canlendar-week spaceBetween">
       <p class="title" v-for="(item, index) in weekTitle" :key="index">{{item}}</p>
@@ -30,7 +30,8 @@ export default {
         'Saturday',
         'Moneday'
       ],
-      canlendarData: []
+      canlendarData: [],
+      selectMonth: new Date()
     }
   },
   mounted() {
@@ -38,16 +39,23 @@ export default {
   },
   methods: {
     prevClick() {
-      let time =
-        fecha.format(new Date(), 'YYYY-') +
-        (+fecha.format(new Date(), 'MM') - 1)
-      this.getCanlendarList(new Date(time))
+      this.selectMonth = new Date(
+        this.expendTime(this.selectMonth, 'YEAR', 'before') +
+          '-' +
+          this.expendTime(this.selectMonth, 'MM', 'before') +
+          '-01'
+      )
+      console.log(this.selectMonth)
+      this.getCanlendarList(new Date(this.selectMonth))
     },
     nextClick() {
-      let time =
-        fecha.format(new Date(), 'YYYY-') +
-        (+fecha.format(new Date(), 'MM') + 1)
-      this.getCanlendarList(new Date(time))
+      this.selectMonth = new Date(
+        this.expendTime(this.selectMonth, 'YEAR', 'after') +
+          '-' +
+          this.expendTime(this.selectMonth, 'MM', 'after') +
+          '-01'
+      )
+      this.getCanlendarList(new Date(this.selectMonth))
     },
     // 获取整个月份的数据
     getCanlendarList(date) {
@@ -116,7 +124,7 @@ export default {
        *  1.全部天数在一个数组  2.一周一周切分组成一个月  ====>   选择2的方案，这样联动一些拓展事件自由度高一点
        */
       this.canlendarData = editDay
-      // console.log(editDay)
+      console.log(editDay)
     },
     // 整理日期数据方法
     createDay(i) {
@@ -134,9 +142,11 @@ export default {
       let expendYear = +fecha.format(date, 'YYYY'),
         expendMonth = +fecha.format(date, 'MM')
       if (status === 'after') {
-        expendMonth + 1 > 12 ? expendYear++ : expendMonth++
+        expendMonth + 1 > 12 ? (expendYear++, (expendMonth = 1)) : expendMonth++
       } else if (status === 'before') {
-        expendMonth - 1 === 0 ? expendYear-- : expendMonth--
+        expendMonth - 1 === 0
+          ? (expendYear--, (expendMonth = 12))
+          : expendMonth--
       }
       if (type === 'YEAR') return expendYear
       else
@@ -157,6 +167,11 @@ export default {
   * {
     box-sizing border-box
     margin 0
+  }
+  .none-back {
+    background none
+    border none
+    outline none
   }
   .spaceBetween {
     width 100%
