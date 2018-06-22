@@ -1,9 +1,11 @@
 <template>
   <div class="vue-canlendar">
     <div class="canlendar-head">
-      <button class="canlendar-arrow none-back" @click="prevClick">&lt;</button>
+      <button class="canlendar-arrow none-back year-arrow" @click="prevClick('YYYY')"><span>&laquo;</span><span style="margin-left: -2.5px">&laquo;</span></button>
+      <button class="canlendar-arrow none-back" @click="prevClick">&laquo;</button>
       {{changeTime(selectMonth, 'YYYY年M月')}}
-      <button class="canlendar-arrow none-back" @click="nextClick">&gt;</button>
+      <button class="canlendar-arrow none-back" @click="nextClick">&raquo;</button>
+      <button class="canlendar-arrow none-back year-arrow" @click="nextClick('YYYY')"><span>&raquo;</span><span style="margin-left: -2.5px">&raquo;</span></button>
     </div>
     <div class="canlendar-week spaceBetween">
       <p class="title" v-for="(item, index) in weekTitle" :key="index">{{item}}</p>
@@ -38,23 +40,34 @@ export default {
     this.getCanlendarList(new Date())
   },
   methods: {
-    prevClick() {
-      this.selectMonth = new Date(
-        this.expendTime(this.selectMonth, 'YEAR', 'before') +
-          '-' +
-          this.expendTime(this.selectMonth, 'MM', 'before') +
-          '-01'
-      )
-      console.log(this.selectMonth)
+    prevClick(type) {
+      if (type === 'YYYY')
+        this.selectMonth =
+          fecha.format(new Date(this.selectMonth), 'YYYY') -
+          1 +
+          fecha.format(new Date(this.selectMonth), '-MM-01')
+      else
+        this.selectMonth = new Date(
+          this.expendTime(this.selectMonth, 'YEAR', 'before') +
+            '-' +
+            this.expendTime(this.selectMonth, 'MM', 'before') +
+            '-01'
+        )
       this.getCanlendarList(new Date(this.selectMonth))
     },
-    nextClick() {
-      this.selectMonth = new Date(
-        this.expendTime(this.selectMonth, 'YEAR', 'after') +
-          '-' +
-          this.expendTime(this.selectMonth, 'MM', 'after') +
-          '-01'
-      )
+    nextClick(type) {
+      if (type === 'YYYY')
+        this.selectMonth =
+          +fecha.format(new Date(this.selectMonth), 'YYYY') +
+          1 +
+          fecha.format(new Date(this.selectMonth), '-MM-01')
+      else
+        this.selectMonth = new Date(
+          this.expendTime(this.selectMonth, 'YEAR', 'after') +
+            '-' +
+            this.expendTime(this.selectMonth, 'MM', 'after') +
+            '-01'
+        )
       this.getCanlendarList(new Date(this.selectMonth))
     },
     // 获取整个月份的数据
@@ -187,10 +200,14 @@ export default {
   }
   .canlendar-arrow {
     font-size 16px
-    margin 0 25px
+    margin 0 40px
+    color #666
   }
   .canlendar-arrow:hover{
     color rgb(81, 160, 250)
+  }
+  .year-arrow {
+    margin 0 -20px
   }
   .canlendar-week {
     background #f0f0f0
