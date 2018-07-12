@@ -11,7 +11,7 @@
       <p class="title" v-for="(item, index) in weekTitle" :key="index">{{item}}</p>
     </div>
     <div class="canlendar-day spaceBetween" v-for="(item, index) in canlendarData" :key="index">
-      <div class="day-con" v-for="(dItem, dIndex) in item" :key="dIndex">{{changeTime(dItem.time, 'M/D')}}</div>
+      <div class="day-con" :class="[dItem.noSel===1?'gray-day':'now-month']" v-for="(dItem, dIndex) in item" :key="dIndex">{{changeTime(dItem.time, 'M/D')}}</div>
     </div>
   </div>
 </template>
@@ -139,11 +139,27 @@ export default {
       this.canlendarData = editDay
       console.log(editDay)
     },
-    // 整理日期数据方法
+    // 整理日期数据方法 status 0 当月 1 过去 2 未来
     createDay(i) {
-      let returnObj = {
-        time: fecha.format(new Date(i), 'YYYY-MM-DD')
-      }
+      let itemTime = new Date(fecha.format(new Date(i), 'YYYY-MM')).getTime(),
+        selectMonth = new Date(
+          fecha.format(new Date(this.selectMonth), 'YYYY-MM')
+        ).getTime(),
+        nowMonth = new Date(fecha.format(Date.now(), 'YYYY-MM')).getTime(),
+        status =
+          nowMonth === itemTime
+            ? 0
+            : nowMonth > itemTime
+              ? 1
+              : nowMonth < itemTime
+                ? 2
+                : 0,
+        noSel = itemTime === selectMonth ? 0 : 1,
+        returnObj = {
+          time: fecha.format(new Date(i), 'YYYY-MM-DD'),
+          status,
+          noSel
+        }
       return returnObj
     },
     // 日期转换方法
@@ -152,8 +168,8 @@ export default {
     },
     // 时间操作拓展方法
     expendTime(date, type, status) {
-      let expendYear = +fecha.format(date, 'YYYY'),
-        expendMonth = +fecha.format(date, 'MM')
+      let expendYear = +fecha.format(new Date(date), 'YYYY'),
+        expendMonth = +fecha.format(new Date(date), 'MM')
       if (status === 'after') {
         expendMonth + 1 > 12 ? (expendYear++, (expendMonth = 1)) : expendMonth++
       } else if (status === 'before') {
@@ -229,8 +245,12 @@ export default {
       text-align right
       padding 8px
     }
-    .day-con:hover {
+    .now-month:hover {
       background rgb(240,247,250)
+    }
+    .gray-day {
+      background #fafafa
+      color #bbb
     }
   }
 }
