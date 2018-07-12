@@ -11,7 +11,16 @@
       <p class="title" v-for="(item, index) in weekTitle" :key="index">{{item}}</p>
     </div>
     <div class="canlendar-day spaceBetween" v-for="(item, index) in canlendarData" :key="index">
-      <div class="day-con" :class="[dItem.noSel===1?'gray-day':'now-month']" v-for="(dItem, dIndex) in item" :key="dIndex">{{changeTime(dItem.time, 'M/D')}}</div>
+      <div class="day-con" :class="[dItem.noSel===1?'gray-day':'now-month']" v-for="(dItem, dIndex) in item" :key="dIndex">
+        <span class="con-time">{{changeTime(dItem.time, 'M/D')}}</span>  
+        <p class="canlendar-content" v-for="(conItem, conIndex) in dItem.content" :key="conIndex">
+          <span @mouseover="conItem.showTip = !conItem.showTip" 
+                @mouseout="conItem.showTip = !conItem.showTip"
+                class="con-ball" :style="{ background: colorArray[conIndex] }">
+            {{conItem.showTip ? conItem.value : ''}}
+          </span>
+        </p>
+      </div>
     </div>
   </div>
 </template>
@@ -32,6 +41,7 @@ export default {
         'Saturday',
         'Moneday'
       ],
+      colorArray: ['#f36554', '#a46666'],
       canlendarData: [],
       selectMonth: new Date()
     }
@@ -160,6 +170,11 @@ export default {
           status,
           noSel
         }
+      if (returnObj.time === fecha.format(Date.now(), 'YYYY-MM-DD'))
+        returnObj.content = [
+          {value: 'now', showTip: false},
+          {value: 'Date', showTip: false}
+        ]
       return returnObj
     },
     // 日期转换方法
@@ -241,9 +256,27 @@ export default {
       border 1px solid #f0f0f0
       border-width 0 1px 1px 0
       display flex
-      flex-direction column-reverse
       text-align right
+      font-size 0
       padding 8px
+      position relative
+      .con-time {
+        position absolute
+        right 8px
+        bottom 8px
+        font-size 14px
+      }
+      .canlendar-content {
+        .con-ball {
+          width 11px 
+          height 11px
+          display inline-block
+          border-radius 50%
+          background #f36554
+          margin-right 5px
+          font-size 12px
+        }
+      }
     }
     .now-month:hover {
       background rgb(240,247,250)
