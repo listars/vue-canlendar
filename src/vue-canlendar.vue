@@ -26,6 +26,7 @@
 </template>
 
 <script>
+// 需要优化
 import fecha from 'fecha'
 export default {
   name: 'VueCanlendar',
